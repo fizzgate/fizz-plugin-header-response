@@ -30,7 +30,7 @@ public class HeaderResponsePlugin extends AbstractFizzPlugin<RouterConfig, Plugi
 
     @Override
     public String pluginName() {
-        return "header-response-plugin";
+        return "header_response_plugin";
     }
 
     @Override
