@@ -1,8 +1,8 @@
-package we.fizz.plugin.header.response;
+package com.fizzgate.fizz.plugin.header.response;
 
 import com.google.common.collect.Lists;
 import lombok.Data;
-import we.plugin.core.filter.config.FizzConfig;
+import com.fizzgate.plugin.core.filter.config.FizzConfig;
 
 import java.util.List;
 

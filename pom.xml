@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <fizz.version>2.5.0-beta1</fizz.version>
+        <fizz.version>2.7.1</fizz.version>
         <spring-framework.version>5.2.18.RELEASE</spring-framework.version>
         <spring-session-bom.version>Dragonfruit-SR3</spring-session-bom.version>
         <reactor-bom.version>Dysprosium-SR25</reactor-bom.version>

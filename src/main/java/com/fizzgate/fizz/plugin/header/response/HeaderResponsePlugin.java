@@ -1,4 +1,4 @@
-package we.fizz.plugin.header.response;
+package com.fizzgate.fizz.plugin.header.response;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -10,16 +10,12 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import we.fizz.plugin.header.response.PluginConfig.Header;
-import we.fizz.plugin.header.response.PluginConfig.Item;
-import we.plugin.FizzPluginFilterChain;
-import we.plugin.auth.ApiConfig;
-import we.plugin.core.filter.AbstractFizzPlugin;
+import com.fizzgate.plugin.FizzPluginFilterChain;
+import com.fizzgate.plugin.auth.ApiConfig;
+import com.fizzgate.plugin.core.filter.AbstractFizzPlugin;
 
 import java.util.List;
 import java.util.Set;
-
-import static we.fizz.plugin.header.response.PluginConfig.Action;
 
 /**
  * @author huanghua
@@ -39,14 +35,14 @@ public class HeaderResponsePlugin extends AbstractFizzPlugin<RouterConfig, Plugi
         RouterConfig routerConfig = routerConfig(exchange);
         ApiConfig apiConfig = apiConfig(exchange);
         PluginConfig pluginConfig = pluginConfig(exchange);
-        List<Item> pluginConfigAllList =
+        List<PluginConfig.Item> pluginConfigAllList =
                 (pluginConfig == null || pluginConfig.getConfigs() == null)
                         ? Lists.newArrayList() : pluginConfig.getConfigs();
         Set<String> gatewayGroups = apiConfig.gatewayGroups;
         gatewayGroups = gatewayGroups == null ? Sets.newHashSet() : gatewayGroups;
-        List<Header> headConfigs = Lists.newArrayList();
+        List<PluginConfig.Header> headConfigs = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(pluginConfigAllList)) {
-            for (Item item : pluginConfigAllList) {
+            for (PluginConfig.Item item : pluginConfigAllList) {
                 if (gatewayGroups.contains(item.getGwGroup())) {
                     if (CollectionUtils.isNotEmpty(item.getHeaders())) {
                         headConfigs.addAll(item.getHeaders());
@@ -61,23 +57,23 @@ public class HeaderResponsePlugin extends AbstractFizzPlugin<RouterConfig, Plugi
         return FizzPluginFilterChain.next(exchange);
     }
 
-    private void processHeader(HttpHeaders headers, RouterConfig routerConfig, List<Header> pluginHeadConfigs) {
+    private void processHeader(HttpHeaders headers, RouterConfig routerConfig, List<PluginConfig.Header> pluginHeadConfigs) {
         // 因为路由配置优先于插件配置，所以先处理插件配置，再处理路由配置
-        for (Header pluginHeadConfig : pluginHeadConfigs) {
+        for (PluginConfig.Header pluginHeadConfig : pluginHeadConfigs) {
             processHeader(headers, pluginHeadConfig);
         }
         if (routerConfig != null && CollectionUtils.isNotEmpty(routerConfig.getHeaders())) {
-            for (Header head : routerConfig.getHeaders()) {
+            for (PluginConfig.Header head : routerConfig.getHeaders()) {
                 processHeader(headers, head);
             }
         }
     }
 
-    private void processHeader(HttpHeaders headers, Header header) {
+    private void processHeader(HttpHeaders headers, PluginConfig.Header header) {
         if (header == null) {
             return;
         }
-        Action action = header.getAction();
+        PluginConfig.Action action = header.getAction();
         String name = header.getName();
         String value = header.getValue();
         if (action == null || StringUtils.isBlank(name)) {
